@@ -1,0 +1,19 @@
+{"user_id":"u1","parent_asin":"B001","rating":5,"title":"hist u1 1","text":"Great scent and good value history one.","timestamp":1650000000000,"verified_purchase":true}
+{"user_id":"u1","parent_asin":"B002","rating":4,"title":"hist u1 2","text":"Nice packaging and excellent quality history two.","timestamp":1650100000000,"verified_purchase":true}
+{"user_id":"u1","parent_asin":"B003","rating":2,"title":"hist u1 3","text":"Bad fit and poor comfort history three.","timestamp":1650200000000,"verified_purchase":true}
+{"user_id":"u1","parent_asin":"B004","rating":5,"title":"hist u1 4","text":"Loved the design and performance history four.","timestamp":1650300000000,"verified_purchase":true}
+{"user_id":"u1","parent_asin":"B005","rating":1,"title":"hist u1 5","text":"Terrible price and not worth it history five.","timestamp":1650400000000,"verified_purchase":true}
+{"user_id":"u1","parent_asin":"B006","rating":5,"title":"FUTURE_TITLE_U1_B006","text":"FUTURE_REVIEW_U1_B006 should never appear in inputs.","timestamp":1650500000000,"verified_purchase":true}
+{"user_id":"u1","parent_asin":"B007","rating":2,"title":"FUTURE_TITLE_U1_B007","text":"FUTURE_REVIEW_U1_B007 should never appear in inputs.","timestamp":1650600000000,"verified_purchase":true}
+{"user_id":"u2","parent_asin":"C001","rating":4,"title":"hist u2 1","text":"Good delivery and useful size history one.","timestamp":1660000000000,"verified_purchase":true}
+{"user_id":"u2","parent_asin":"C002","rating":5,"title":"hist u2 2","text":"Perfect quality and easy use history two.","timestamp":1660100000000,"verified_purchase":true}
+{"user_id":"u2","parent_asin":"C003","rating":1,"title":"hist u2 3","text":"Broken battery and difficult setup history three.","timestamp":1660200000000,"verified_purchase":true}
+{"user_id":"u2","parent_asin":"C004","rating":2,"title":"hist u2 4","text":"Poor packaging and bad value history four.","timestamp":1660300000000,"verified_purchase":true}
+{"user_id":"u2","parent_asin":"C005","rating":5,"title":"hist u2 5","text":"Excellent design and comfortable fit history five.","timestamp":1660400000000,"verified_purchase":true}
+{"user_id":"u2","parent_asin":"C006","rating":1,"title":"FUTURE_TITLE_U2_C006","text":"FUTURE_REVIEW_U2_C006 should never appear in inputs.","timestamp":1660500000000,"verified_purchase":true}
+{"user_id":"u3","parent_asin":"D001","rating":5,"title":"hist u3 1","text":"Great taste and good price history one.","timestamp":1670000000000,"verified_purchase":false}
+{"user_id":"u3","parent_asin":"D002","rating":4,"title":"hist u3 2","text":"Loved scent and packaging history two.","timestamp":1670100000000,"verified_purchase":false}
+{"user_id":"u3","parent_asin":"D003","rating":2,"title":"hist u3 3","text":"Expensive and disappointing quality history three.","timestamp":1670200000000,"verified_purchase":false}
+{"user_id":"u3","parent_asin":"D004","rating":5,"title":"hist u3 4","text":"Nice performance and useful design history four.","timestamp":1670300000000,"verified_purchase":false}
+{"user_id":"u3","parent_asin":"D005","rating":1,"title":"hist u3 5","text":"Low quality and uncomfortable fit history five.","timestamp":1670400000000,"verified_purchase":false}
+{"user_id":"u3","parent_asin":"D006","rating":4,"title":"FUTURE_TITLE_U3_D006","text":"FUTURE_REVIEW_U3_D006 should never appear in inputs.","timestamp":1670500000000,"verified_purchase":false}

@@ -21,6 +21,7 @@ class KGDataset(Dataset):
         self.dataset_name = dataset_name
         self.docs, self.claims, self.doc_kgs, self.claim_kgs, self.labels = get_dataset(self.dataset_name)
         self.prompt = "Question: Does the Document support the Claim? Please Answer in one word in the form of \'support\' or \'unsupport\'.\n\n"
+        self.is_amazon = self.dataset_name.startswith("Amazon")
 
 
     def __len__(self):
@@ -30,7 +31,18 @@ class KGDataset(Dataset):
     def __getitem__(self, index):
 
         doc, claim, doc_kgs_text, claim_kgs_text, label = self.docs[index], self.claims[index], self.doc_kgs[index], self.claim_kgs[index],self.labels[index]
-        text = f'{self.prompt}\nClaim: {claim}\nDocument: {doc}'
+        if self.is_amazon:
+            text = (
+                "Question: Based on the user's historical behavior, will the user give a high rating to the candidate item?\n"
+                "Please answer in one word in the form of 'support' or 'unsupport'.\n\n"
+                f"User History:\n{doc}\n\n"
+                f"Candidate Item:\n{claim}\n\n"
+                "Conclusion:\n"
+                'Return "support" if the user is likely to give a high rating.\n'
+                'Return "unsupport" if the user is unlikely to give a high rating.'
+            )
+        else:
+            text = f'{self.prompt}\nClaim: {claim}\nDocument: {doc}'
         claim_kg = torch.load(f'{PATH}/extracted_KG/{self.dataset_name}/graphs/claim/{index}.pt')
         doc_kg = torch.load(f'{PATH}/extracted_KG/{self.dataset_name}/graphs/doc/{index}.pt')
         if label == 1:

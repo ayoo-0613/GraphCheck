@@ -111,6 +111,14 @@ def step_two():
     _encode_graph()
 
 def generate_split(num_nodes, path):
+    split_files = [
+        f'{path}/train_indices.txt',
+        f'{path}/val_indices.txt',
+        f'{path}/test_indices.txt',
+    ]
+    if all(os.path.exists(split_file) for split_file in split_files):
+        print(f"Existing split files found under {path}; reusing them.")
+        return
 
     # Split the dataset into train, val, and test sets
     indices = np.arange(num_nodes)
