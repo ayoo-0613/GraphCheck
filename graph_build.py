@@ -9,16 +9,19 @@ import os
 import numpy as np
 from sklearn.model_selection import train_test_split
 import argparse
+from pathlib import Path
 
 pythonpath = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 print(pythonpath)
 sys.path.insert(0, pythonpath)
+repo_root = Path(__file__).resolve().parent
 
 def parse_args():
     parser = argparse.ArgumentParser(description="GraphCheck")
 
     parser.add_argument("--data_name", type=str, required=True, help="Name of the dataset folder")
-    parser.add_argument("--project_root", type=str, default=os.path.abspath(os.path.join(os.path.dirname(__file__), "..")), help="Root directory of the project")
+    parser.add_argument("--project_root", type=str, default=str(repo_root.parent), help="Backward-compatible project root argument")
+    parser.add_argument("--kg_root", type=str, default=None, help="Root directory containing extracted KG dataset folders")
 
     args = parser.parse_args()
     return args
@@ -146,7 +149,15 @@ if __name__ == '__main__':
     args = parse_args()
 
     project_root = args.project_root
-    path = f'{project_root}/GraphCheck/dataset/extracted_KG'
+    if args.kg_root:
+        path = args.kg_root
+    else:
+        candidate = Path(project_root) / "GraphCheck" / "dataset" / "extracted_KG"
+        if candidate.exists():
+            path = str(candidate)
+        else:
+            path = str(repo_root / "dataset" / "extracted_KG")
+    
     data_name = args.data_name
     
     dataset = pd.read_pickle(f'{path}/{data_name}/{data_name}.pkl')

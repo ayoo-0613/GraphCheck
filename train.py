@@ -12,6 +12,7 @@ from src.config import parse_args
 from src.ckpt import _save_checkpoint, _reload_best_model
 from dataset.utils.collate import collate_fn
 from src.utils import seed_everything, adjust_learning_rate, get_accuracy
+from src.utils import enrich_rating_output, get_rating_metrics, is_rating_labels, print_rating_report
 from model.graphcheck import GraphCheck
 
 
@@ -21,6 +22,14 @@ from model.graphcheck import GraphCheck
 # He et al. (2024), "G-Retriever: Retrieval-Augmented Generation for Textual Graph Understanding and Question Answering"
 # arXiv:2402.07630
 # -----------------------------------------------------------
+
+def cleanup_cuda_memory():
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.reset_max_memory_allocated()
+    else:
+        print("CUDA memory report skipped because CUDA is not available.")
+
 
 def main(args):
 
@@ -106,8 +115,7 @@ def main(args):
             print(f'Early stop at epoch {epoch}')
             break
 
-    torch.cuda.empty_cache()
-    torch.cuda.reset_max_memory_allocated()
+    cleanup_cuda_memory()
 
     # Evaluating
     os.makedirs(f'{args.output_dir}/{args.project}', exist_ok=True)
@@ -116,6 +124,8 @@ def main(args):
 
     model = _reload_best_model(model, args)
     model.eval()
+    is_amazon_rating = args.train_dataset.startswith("Amazon")
+    saw_rating_labels = False
     progress_bar_test = tqdm(range(len(test_loader)))
     with open(path, "w") as f:
         for step, batch in enumerate(test_loader):
@@ -123,11 +133,18 @@ def main(args):
                 output = model.inference(batch)
                 df = pd.DataFrame(output)
                 for _, row in df.iterrows():
-                    f.write(json.dumps(dict(row)) + "\n")
+                    row_dict = dict(row)
+                    if is_amazon_rating or is_rating_labels([row_dict.get("label")]):
+                        saw_rating_labels = True
+                        row_dict = enrich_rating_output(row_dict)
+                    f.write(json.dumps(row_dict) + "\n")
             progress_bar_test.update(1)
 
-    bacc = get_accuracy(path)
-    print(f'Test BAcc: {bacc}')
+    if is_amazon_rating or saw_rating_labels:
+        print_rating_report(get_rating_metrics(path))
+    else:
+        bacc = get_accuracy(path)
+        print(f'Test BAcc: {bacc}')
 
 
 if __name__ == "__main__":
@@ -135,6 +152,5 @@ if __name__ == "__main__":
     args = parse_args()
 
     main(args)
-    torch.cuda.empty_cache()
-    torch.cuda.reset_max_memory_allocated()
+    cleanup_cuda_memory()
     gc.collect()

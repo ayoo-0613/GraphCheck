@@ -1,0 +1,17 @@
+node_id,node_attr
+0,user:current_user
+1,item:b0073k97hc
+2,time_bucket:2012_04
+3,category:digital_music
+4,category:cds_vinyl
+5,category:pop
+6,category:adult_alternative
+7,store:civil_twilight_format:_audio_cd
+8,price_range:low
+9,item:b0038fi7sq
+10,price_range:medium
+11,item:b007rv4bdw
+12,time_bucket:2012_09
+13,category:rock
+14,category:hard_rock
+15,store:jorn_format:_audio_cd

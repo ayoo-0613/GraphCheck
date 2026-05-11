@@ -1,0 +1,17 @@
+node_id,node_attr
+0,user:current_user
+1,item:b000007n73
+2,time_bucket:2013_01
+3,category:digital_music
+4,category:cds_vinyl
+5,category:international_music
+6,category:europe
+7,category:britain_ireland
+8,category:britain
+9,store:davy_spillane_format:_audio_cd
+10,price_range:low
+11,item:b000001jay
+12,item:b0016om2tg
+13,time_bucket:2014_02
+14,store:laliberte_kevin_artist_format:_audio_cd
+15,price_range:unknown

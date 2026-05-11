@@ -1,0 +1,17 @@
+node_id,node_attr
+0,user:current_user
+1,item:b007ho392s
+2,time_bucket:2013_04
+3,category:digital_music
+4,category:cds_vinyl
+5,category:country
+6,store:carrie_underwood_format:_audio_cd
+7,price_range:low
+8,item:b00dyfcyso
+9,time_bucket:2013_12
+10,category:pop
+11,store:john_legend_format:_audio_cd
+12,item:b0031sboki
+13,category:vocal_pop
+14,store:christina_aguilera_format:_audio_cd
+15,price_range:medium

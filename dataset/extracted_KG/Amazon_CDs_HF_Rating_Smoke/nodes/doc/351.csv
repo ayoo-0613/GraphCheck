@@ -1,0 +1,14 @@
+node_id,node_attr
+0,user:current_user
+1,item:b003lwlg5c
+2,time_bucket:2010_08
+3,category:digital_music
+4,category:cds_vinyl
+5,category:pop
+6,store:alex_band_format:_audio_cd
+7,price_range:premium
+8,item:b003jifzxm
+9,category:christian_gospel
+10,category:pop_contemporary
+11,store:ed_kowalczyk_format:_audio_cd
+12,price_range:medium

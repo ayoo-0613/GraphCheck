@@ -9,7 +9,8 @@ from dataset.utils.dataset import KGDataset
 from src.config import parse_args
 from model import model_path
 from src.ckpt import _reload_best_model
-from src.utils import get_accuracy, seed_everything
+from src.utils import enrich_rating_output, get_accuracy, get_rating_metrics, is_rating_labels
+from src.utils import print_rating_report, seed_everything
 from dataset.utils.collate import collate_fn
 from model.graphcheck import GraphCheck
 
@@ -36,6 +37,8 @@ def main(args):
     model = _reload_best_model(model, args)
 
     model.eval()
+    is_amazon_rating = args.dataset_name.startswith("Amazon")
+    saw_rating_labels = False
     progress_bar_test = tqdm(range(len(test_loader)))
     with open(path, "w") as f:
         for _, batch in enumerate(test_loader):
@@ -43,17 +46,25 @@ def main(args):
                 output = model.inference(batch)
                 df = pd.DataFrame(output)
                 for _, row in df.iterrows():
-                    f.write(json.dumps(dict(row)) + "\n")
+                    row_dict = dict(row)
+                    if is_amazon_rating or is_rating_labels([row_dict.get("label")]):
+                        saw_rating_labels = True
+                        row_dict = enrich_rating_output(row_dict)
+                    f.write(json.dumps(row_dict) + "\n")
             progress_bar_test.update(1)
 
     # Evaluating
-    bacc = get_accuracy(path)
-    print(f'Test BAcc: {bacc}')
+    if is_amazon_rating or saw_rating_labels:
+        print_rating_report(get_rating_metrics(path))
+    else:
+        bacc = get_accuracy(path)
+        print(f'Test BAcc: {bacc}')
 
 
 if __name__ == "__main__":
     args = parse_args()
     main(args)
-    torch.cuda.empty_cache()
-    torch.cuda.reset_max_memory_allocated()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.reset_max_memory_allocated()
     gc.collect()

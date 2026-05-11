@@ -1,0 +1,13 @@
+node_id,node_attr
+0,user:current_user
+1,item:b00ikm5n02
+2,time_bucket:2016_01
+3,category:digital_music
+4,category:cds_vinyl
+5,category:children_s_music
+6,category:disney
+7,store:disney_karaoke_series_format:_audio_cd
+8,price_range:low
+9,item:b008xnpn0s
+10,store:yo_gabba_gabba_format:_audio_cd
+11,price_range:medium

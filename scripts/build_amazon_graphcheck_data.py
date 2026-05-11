@@ -8,9 +8,9 @@ import json
 import os
 import random
 import re
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import datetime, timezone
-from typing import Any, Iterable, Optional
+from typing import Any, Iterable
 
 import pandas as pd
 
@@ -366,19 +366,14 @@ def build_candidate_item_kg(
     return triples
 
 
-def label_for_rating(
-    rating: float,
-    positive_threshold: int,
-    negative_threshold: int,
-    drop_neutral: bool,
-) -> Optional[int]:
-    if rating >= positive_threshold:
-        return 1
-    if rating <= negative_threshold:
-        return 0
-    if drop_neutral:
+def exact_rating_label(rating: Any) -> int | None:
+    try:
+        label = int(round(float(rating)))
+    except Exception:
         return None
-    return 0
+    if label in {1, 2, 3, 4, 5}:
+        return label
+    return None
 
 
 def split_indices(
@@ -440,12 +435,7 @@ def build_samples(args: argparse.Namespace) -> list[dict[str, Any]]:
             history_all = interactions[:target_pos]
             if len(history_all) < args.min_user_interactions:
                 continue
-            label = label_for_rating(
-                target["rating"],
-                args.positive_threshold,
-                args.negative_threshold,
-                args.drop_neutral,
-            )
+            label = exact_rating_label(target["rating"])
             if label is None:
                 continue
             history = history_all[-args.history_k :]
@@ -471,7 +461,7 @@ def build_samples(args: argparse.Namespace) -> list[dict[str, Any]]:
                     "target_rating": target["rating"],
                     "target_timestamp": target["timestamp"],
                     "history_item_ids": [row["item_id"] for row in history],
-                    "task_type": "amazon_binary_high_rating",
+                    "task_type": "rating",
                     "_target_review_text": target.get("text", ""),
                     "_target_review_title": target.get("title", ""),
                 }
@@ -487,9 +477,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dataset_name", default="Amazon_Beauty")
     parser.add_argument("--min_user_interactions", type=int, default=5)
     parser.add_argument("--history_k", type=int, default=10)
-    parser.add_argument("--positive_threshold", type=int, default=4)
-    parser.add_argument("--negative_threshold", type=int, default=2)
-    parser.add_argument("--drop_neutral", type=str_to_bool, default=True)
+    parser.add_argument("--positive_threshold", type=int, default=4, help="Deprecated; ignored for rating prediction")
+    parser.add_argument("--negative_threshold", type=int, default=2, help="Deprecated; ignored for rating prediction")
+    parser.add_argument("--drop_neutral", type=str_to_bool, default=True, help="Deprecated; ignored for rating prediction")
     parser.add_argument("--verified_only", type=str_to_bool, default=False)
     parser.add_argument("--split_strategy", choices=["temporal_global", "temporal_user"], default="temporal_global")
     parser.add_argument("--train_ratio", type=float, default=0.8)
@@ -506,6 +496,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    print("positive_threshold is ignored because Amazon user simulation now uses exact 1 to 5 rating labels.")
+    print("negative_threshold is ignored because Amazon user simulation now uses exact 1 to 5 rating labels.")
+    print("drop_neutral is ignored because rating == 3 is retained in 1 to 5 rating prediction.")
     total_ratio = args.train_ratio + args.val_ratio + args.test_ratio
     if abs(total_ratio - 1.0) > 1e-6:
         raise ValueError(f"Split ratios must sum to 1.0, got {total_ratio}")
@@ -527,13 +520,46 @@ def main() -> None:
     os.makedirs(split_root, exist_ok=True)
 
     df = pd.DataFrame(samples).drop(columns=["_target_review_text", "_target_review_title"])
+    validate_output_dataframe(df)
     df.to_pickle(os.path.join(output_root, f"{args.dataset_name}.pkl"))
     write_indices(os.path.join(split_root, "train_indices.txt"), train_idx)
     write_indices(os.path.join(split_root, "val_indices.txt"), val_idx)
     write_indices(os.path.join(split_root, "test_indices.txt"), test_idx)
 
+    label_counts = Counter(int(label) for label in df["label"])
+    rating_counts = Counter(df["target_rating"])
     print(f"Wrote {len(df)} samples to {output_root}")
     print(f"Split sizes: train={len(train_idx)}, val={len(val_idx)}, test={len(test_idx)}")
+    print(f"Number of samples: {len(df)}")
+    print(f"Label distribution: {dict(label_counts)}")
+    print(f"Target rating distribution: {dict(rating_counts)}")
+    print(f"Number of unique rating labels: {len(label_counts)}")
+    if len(label_counts) < 3:
+        print("Warning: fewer than 3 unique rating labels found. This is suitable for smoke testing but weak for evaluation.")
+    if label_counts and max(label_counts.values()) / len(df) > 0.8:
+        print("Warning: one rating label covers more than 80% of samples.")
+
+
+def validate_output_dataframe(df: pd.DataFrame) -> None:
+    labels = [int(label) for label in df["label"]]
+    if not all(label in {1, 2, 3, 4, 5} for label in labels):
+        raise ValueError("Amazon labels must be integers from 1 to 5.")
+    rating_three_rows = [
+        idx for idx, row in df.iterrows()
+        if exact_rating_label(row["target_rating"]) == 3
+    ]
+    if rating_three_rows and not all(int(df.loc[idx, "label"]) == 3 for idx in rating_three_rows):
+        raise ValueError("Rows with target rating 3 must be retained with label 3.")
+    for idx, row in df.iterrows():
+        for field in ("doc_kg", "claim_kg"):
+            triples = row[field]
+            if not isinstance(triples, list) or not triples:
+                raise ValueError(f"Row {idx} {field} must be a non-empty list.")
+            for triple in triples:
+                if not isinstance(triple, list) or len(triple) != 3:
+                    raise ValueError(f"Row {idx} {field} has invalid triple: {triple!r}")
+                if not all(isinstance(part, str) and part.strip() for part in triple):
+                    raise ValueError(f"Row {idx} {field} has an empty triple element: {triple!r}")
 
 
 if __name__ == "__main__":

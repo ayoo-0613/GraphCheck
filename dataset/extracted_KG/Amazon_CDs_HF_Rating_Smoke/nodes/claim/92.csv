@@ -1,0 +1,9 @@
+node_id,node_attr
+0,item:target_item
+1,category:digital_music
+2,category:cds_vinyl
+3,category:pop
+4,category:oldies
+5,category:traditional_pop
+6,store:various_artists_artist_format:_audio_cd
+7,price_range:medium

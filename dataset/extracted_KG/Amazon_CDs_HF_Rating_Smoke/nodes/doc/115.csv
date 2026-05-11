@@ -1,0 +1,17 @@
+node_id,node_attr
+0,user:current_user
+1,item:b000006cj7
+2,time_bucket:2011_04
+3,category:digital_music
+4,category:cds_vinyl
+5,category:christian_gospel
+6,category:pop_contemporary
+7,store:kevin_williams_format:_audio_cd
+8,price_range:low
+9,item:b0041w565m
+10,time_bucket:2012_01
+11,store:joslin_grove_choral_society_format:_audio_cd
+12,price_range:medium
+13,aspect:performance
+14,item:b000k2ug5c
+15,store:various_artists_artist_format:_audio_cd

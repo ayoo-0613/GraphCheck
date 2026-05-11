@@ -1,0 +1,7 @@
+src,edge_attr,dst
+0,belongs_to,1
+0,belongs_to,2
+0,belongs_to,3
+0,belongs_to,4
+0,sold_by,5
+0,has_price_range,6

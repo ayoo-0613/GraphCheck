@@ -1,0 +1,16 @@
+node_id,node_attr
+0,user:current_user
+1,item:b001h3kmny
+2,time_bucket:2014_07
+3,category:digital_music
+4,category:cds_vinyl
+5,category:pop
+6,store:maroon_5_format:_audio_cd
+7,price_range:low
+8,item:b0007op284
+9,category:country
+10,category:today_s_country
+11,store:miranda_lambert_format:_audio_cd
+12,item:b004zol57y
+13,store:now_music_format:_audio_cd
+14,price_range:medium

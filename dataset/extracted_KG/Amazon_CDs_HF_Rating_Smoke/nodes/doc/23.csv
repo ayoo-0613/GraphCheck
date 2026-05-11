@@ -1,0 +1,17 @@
+node_id,node_attr
+0,user:current_user
+1,item:b003zj0zx0
+2,time_bucket:2014_07
+3,category:digital_music
+4,category:cds_vinyl
+5,category:rap_hip-hop
+6,category:pop_rap
+7,store:bruno_mars_format:_audio_cd
+8,price_range:low
+9,aspect:price
+10,item:b00454u1ns
+11,category:pop
+12,store:p_nk_format:_audio_cd
+13,item:b003kusug8
+14,category:gangsta_hardcore
+15,store:eminem_format:_audio_cd

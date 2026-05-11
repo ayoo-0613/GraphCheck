@@ -1,0 +1,17 @@
+node_id,node_attr
+0,user:current_user
+1,item:b000bkjkhs
+2,time_bucket:2008_03
+3,category:digital_music
+4,category:cds_vinyl
+5,category:soundtracks
+6,store:gregorian_format:_audio_cd
+7,price_range:unknown
+8,item:b0000014tp
+9,category:movie_soundtracks
+10,store:zbigniew_preisner_format:_audio_cd
+11,price_range:medium
+12,item:b000057hap
+13,category:rock
+14,category:folk_rock
+15,store:kennedy_brian_artist_format:_audio_cd

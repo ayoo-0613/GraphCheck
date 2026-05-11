@@ -4,10 +4,10 @@ from torch.utils.data import Dataset
 import os
 
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-PATH = f'{project_root}'
+PATH = os.environ.get("GRAPHCHECK_KG_ROOT", f'{project_root}/extracted_KG')
 
 def get_dataset(dataset_name):
-    result_df = pd.read_pickle(f'{PATH}/extracted_KG/{dataset_name}/{dataset_name}.pkl')
+    result_df = pd.read_pickle(f'{PATH}/{dataset_name}/{dataset_name}.pkl')
     docs = result_df['doc_text'].values
     claims = result_df['claim_text'].values
     doc_kgs = result_df['doc_kg'].values
@@ -33,22 +33,23 @@ class KGDataset(Dataset):
         doc, claim, doc_kgs_text, claim_kgs_text, label = self.docs[index], self.claims[index], self.doc_kgs[index], self.claim_kgs[index],self.labels[index]
         if self.is_amazon:
             text = (
-                "Question: Based on the user's historical behavior, will the user give a high rating to the candidate item?\n"
-                "Please answer in one word in the form of 'support' or 'unsupport'.\n\n"
+                "Question: Based on the user's historical behavior, predict the rating that the user would give to the candidate item.\n"
+                "Please answer with one number only: 1, 2, 3, 4, or 5.\n\n"
                 f"User History:\n{doc}\n\n"
                 f"Candidate Item:\n{claim}\n\n"
-                "Conclusion:\n"
-                'Return "support" if the user is likely to give a high rating.\n'
-                'Return "unsupport" if the user is unlikely to give a high rating.'
+                "Rating:"
             )
         else:
             text = f'{self.prompt}\nClaim: {claim}\nDocument: {doc}'
-        claim_kg = torch.load(f'{PATH}/extracted_KG/{self.dataset_name}/graphs/claim/{index}.pt')
-        doc_kg = torch.load(f'{PATH}/extracted_KG/{self.dataset_name}/graphs/doc/{index}.pt')
-        if label == 1:
-            label = 'support'
+        claim_kg = torch.load(f'{PATH}/{self.dataset_name}/graphs/claim/{index}.pt')
+        doc_kg = torch.load(f'{PATH}/{self.dataset_name}/graphs/doc/{index}.pt')
+        if self.is_amazon:
+            label = str(int(label))
         else:
-            label = 'unsupport'
+            if label == 1:
+                label = 'support'
+            else:
+                label = 'unsupport'
 
         return {
             'id': index,
@@ -65,13 +66,13 @@ class KGDataset(Dataset):
     def get_idx_split(self):
 
         # Load the saved indices
-        with open(f'{PATH}/extracted_KG/{self.dataset_name}/split/train_indices.txt', 'r') as file:
+        with open(f'{PATH}/{self.dataset_name}/split/train_indices.txt', 'r') as file:
             train_indices = [int(line.strip()) for line in file]
 
-        with open(f'{PATH}/extracted_KG/{self.dataset_name}/split/val_indices.txt', 'r') as file:
+        with open(f'{PATH}/{self.dataset_name}/split/val_indices.txt', 'r') as file:
             val_indices = [int(line.strip()) for line in file]
 
-        with open(f'{PATH}/extracted_KG/{self.dataset_name}/split/test_indices.txt', 'r') as file:
+        with open(f'{PATH}/{self.dataset_name}/split/test_indices.txt', 'r') as file:
             test_indices = [int(line.strip()) for line in file]
 
         return {'train': train_indices, 'val': val_indices, 'test': test_indices}

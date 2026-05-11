@@ -1,0 +1,17 @@
+node_id,node_attr
+0,user:current_user
+1,item:b000000x8l
+2,time_bucket:2000_03
+3,category:digital_music
+4,category:cds_vinyl
+5,category:rock
+6,category:progressive
+7,category:electronic
+8,store:universe_hearts_of_space_series_format:_audio_cd
+9,price_range:low
+10,item:b000026hjm
+11,time_bucket:2000_06
+12,category:imports
+13,category:international
+14,store:the_chieftains_format:_audio_cd
+15,price_range:medium

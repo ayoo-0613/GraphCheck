@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def main() -> None:
     tmp_root = Path(tempfile.mkdtemp(prefix="amazon_graphcheck_smoke_"))
     try:
-        dataset_name = "Amazon_Test"
+        dataset_name = "Amazon_Test_Rating"
         subprocess.run(
             [
                 sys.executable,
@@ -35,8 +35,6 @@ def main() -> None:
                 "5",
                 "--history_k",
                 "5",
-                "--drop_neutral",
-                "true",
             ],
             check=True,
         )
@@ -48,7 +46,9 @@ def main() -> None:
         assert len(df) > 0, "no samples were created"
         for column in ["doc_text", "claim_text", "doc_kg", "claim_kg", "label"]:
             assert column in df.columns, f"missing column {column}"
-        assert set(df["label"].unique()).issubset({0, 1}), "labels must be binary"
+        assert set(df["label"].unique()).issubset({1, 2, 3, 4, 5}), "labels must be 1 to 5 ratings"
+        assert set(df["task_type"].unique()) == {"rating"}, "task_type must be rating"
+        assert 3 in set(df["label"].unique()), "3-star ratings must be retained"
 
         target_review_by_item = {
             "B006": "FUTURE_REVIEW_U1_B006",

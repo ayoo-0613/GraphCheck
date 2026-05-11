@@ -1,0 +1,15 @@
+node_id,node_attr
+0,user:current_user
+1,item:b00dyfcyso
+2,time_bucket:2013_12
+3,category:digital_music
+4,category:cds_vinyl
+5,category:pop
+6,store:john_legend_format:_audio_cd
+7,price_range:low
+8,item:b0031sboki
+9,category:vocal_pop
+10,store:christina_aguilera_format:_audio_cd
+11,price_range:medium
+12,item:b002sew5ww
+13,store:onerepublic_format:_audio_cd

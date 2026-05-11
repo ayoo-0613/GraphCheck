@@ -4,7 +4,7 @@
 {"user_id":"u1","parent_asin":"B004","rating":5,"title":"hist u1 4","text":"Loved the design and performance history four.","timestamp":1650300000000,"verified_purchase":true}
 {"user_id":"u1","parent_asin":"B005","rating":1,"title":"hist u1 5","text":"Terrible price and not worth it history five.","timestamp":1650400000000,"verified_purchase":true}
 {"user_id":"u1","parent_asin":"B006","rating":5,"title":"FUTURE_TITLE_U1_B006","text":"FUTURE_REVIEW_U1_B006 should never appear in inputs.","timestamp":1650500000000,"verified_purchase":true}
-{"user_id":"u1","parent_asin":"B007","rating":2,"title":"FUTURE_TITLE_U1_B007","text":"FUTURE_REVIEW_U1_B007 should never appear in inputs.","timestamp":1650600000000,"verified_purchase":true}
+{"user_id":"u1","parent_asin":"B007","rating":3,"title":"FUTURE_TITLE_U1_B007","text":"FUTURE_REVIEW_U1_B007 should never appear in inputs.","timestamp":1650600000000,"verified_purchase":true}
 {"user_id":"u2","parent_asin":"C001","rating":4,"title":"hist u2 1","text":"Good delivery and useful size history one.","timestamp":1660000000000,"verified_purchase":true}
 {"user_id":"u2","parent_asin":"C002","rating":5,"title":"hist u2 2","text":"Perfect quality and easy use history two.","timestamp":1660100000000,"verified_purchase":true}
 {"user_id":"u2","parent_asin":"C003","rating":1,"title":"hist u2 3","text":"Broken battery and difficult setup history three.","timestamp":1660200000000,"verified_purchase":true}

@@ -1,0 +1,13 @@
+node_id,node_attr
+0,user:current_user
+1,item:b000002gyz
+2,time_bucket:2016_06
+3,category:digital_music
+4,category:cds_vinyl
+5,category:folk
+6,category:contemporary_folk
+7,store:harry_chapin_format:_audio_cd
+8,price_range:low
+9,item:b000002juc
+10,category:traditional_folk
+11,store:jim_croce_format:_audio_cd

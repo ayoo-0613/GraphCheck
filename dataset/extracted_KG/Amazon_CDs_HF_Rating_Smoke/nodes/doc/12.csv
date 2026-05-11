@@ -1,0 +1,17 @@
+node_id,node_attr
+0,user:current_user
+1,item:b00djyjwmg
+2,time_bucket:2014_06
+3,category:digital_music
+4,category:cds_vinyl
+5,category:pop
+6,store:now_music_format:_audio_cd
+7,price_range:medium
+8,item:b00dwfq2n4
+9,time_bucket:2014_07
+10,category:r_b
+11,category:contemporary_r_b
+12,store:justin_timberlake_format:_audio_cd
+13,price_range:low
+14,item:b001h3kmny
+15,store:maroon_5_format:_audio_cd

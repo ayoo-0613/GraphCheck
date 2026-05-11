@@ -1,0 +1,13 @@
+node_id,node_attr
+0,user:current_user
+1,item:b00zw048di
+2,time_bucket:2016_03
+3,category:digital_music
+4,category:cds_vinyl
+5,category:rock
+6,store:nathaniel_rateliff_nathaniel_rateliff_the_night_sweats_format:_audio_cd
+7,price_range:medium
+8,item:b00xi057fm
+9,category:pop
+10,store:x_ambassadors_format:_audio_cd
+11,price_range:low

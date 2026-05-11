@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_build_amazon_graphcheck_data(tmp_path):
     reviews_path = ROOT / "tests" / "fixtures" / "amazon_reviews_small.jsonl"
     metadata_path = ROOT / "tests" / "fixtures" / "amazon_meta_small.jsonl"
-    dataset_name = "Amazon_Test"
+    dataset_name = "Amazon_Test_Rating"
 
     subprocess.run(
         [
@@ -29,8 +29,6 @@ def test_build_amazon_graphcheck_data(tmp_path):
             "5",
             "--history_k",
             "5",
-            "--drop_neutral",
-            "true",
         ],
         check=True,
     )
@@ -72,7 +70,10 @@ def test_build_amazon_graphcheck_data(tmp_path):
             assert len(triple) == 3
             assert all(isinstance(part, str) and part.strip() for part in triple)
 
-    assert set(df["label"].unique()).issubset({0, 1})
+    assert set(df["label"].unique()).issubset({1, 2, 3, 4, 5})
+    assert set(df["task_type"].unique()) == {"rating"}
+    assert 3 in set(df["label"].unique())
+    assert 0 not in set(df["label"].unique())
     assert (dataset_root / "split" / "train_indices.txt").exists()
     assert (dataset_root / "split" / "val_indices.txt").exists()
     assert (dataset_root / "split" / "test_indices.txt").exists()

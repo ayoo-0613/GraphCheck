@@ -1,0 +1,9 @@
+node_id,node_attr
+0,item:target_item
+1,category:digital_music
+2,category:cds_vinyl
+3,category:opera_classical_vocal
+4,category:vocal_non-opera
+5,category:noels
+6,store:loreena_mckennitt_format:_audio_cd
+7,price_range:low

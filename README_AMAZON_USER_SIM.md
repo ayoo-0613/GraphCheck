@@ -2,13 +2,9 @@
 
 ## Purpose
 
-This extension adapts GraphCheck from fact checking to Amazon behavioral-KG-conditioned LLM user simulation. The first supported task is binary high-rating prediction:
+This extension adapts GraphCheck from KG-powered fact checking to Amazon behavioral-KG-conditioned user simulation. Amazon user simulation is now formulated as exact 1-to-5 rating prediction.
 
-- `rating >= 4` maps to `support`
-- `rating <= 2` maps to `unsupport`
-- `rating == 3` is dropped by default
-
-The original GraphCheck fact-checking datasets and prompt path remain available.
+The original GraphCheck fact-checking datasets still use `support` / `unsupport`. Amazon datasets do not use `support` / `unsupport`; their labels are `"1"`, `"2"`, `"3"`, `"4"`, or `"5"`.
 
 ## Mapping
 
@@ -18,7 +14,11 @@ The original GraphCheck fact-checking datasets and prompt path remain available.
 | `claim_text` | candidate item metadata text |
 | `doc_kg` | user behavioral KG from historical interactions |
 | `claim_kg` | candidate item KG from metadata |
-| `label` | binary high-rating label |
+| `label` | exact target rating, one of 1, 2, 3, 4, 5 |
+
+Input: user history text, candidate item metadata text, user behavioral KG, and candidate item KG.
+
+Output: exact user rating from 1 to 5.
 
 The target review title/text is future information and is never used in `doc_text`, `claim_text`, `doc_kg`, or `claim_kg`.
 
@@ -41,8 +41,7 @@ python scripts/build_amazon_graphcheck_data.py \
   --output_dir dataset/extracted_KG \
   --dataset_name Amazon_Beauty \
   --min_user_interactions 5 \
-  --history_k 10 \
-  --drop_neutral true
+  --history_k 10
 ```
 
 Outputs:
@@ -52,6 +51,8 @@ Outputs:
 - `dataset/extracted_KG/Amazon_Beauty/split/val_indices.txt`
 - `dataset/extracted_KG/Amazon_Beauty/split/test_indices.txt`
 
+Deprecated binary arguments such as `--positive_threshold`, `--negative_threshold`, and `--drop_neutral` are accepted for CLI compatibility but ignored. Rating 3 is retained.
+
 ## Build Graphs
 
 ```bash
@@ -59,6 +60,25 @@ python graph_build.py --data_name Amazon_Beauty
 ```
 
 If split files already exist, `graph_build.py` reuses them and does not overwrite temporal splits.
+
+## Prompt
+
+Amazon datasets use this rating prompt:
+
+```text
+Question: Based on the user's historical behavior, predict the rating that the user would give to the candidate item.
+Please answer with one number only: 1, 2, 3, 4, or 5.
+
+User History:
+{doc_text}
+
+Candidate Item:
+{claim_text}
+
+Rating:
+```
+
+Non-Amazon datasets keep the original GraphCheck fact-checking prompt.
 
 ## Train
 
@@ -73,18 +93,21 @@ python train.py \
   --num_epochs 10
 ```
 
-When the dataset name starts with `Amazon`, `KGDataset` uses the Amazon high-rating prompt. Other datasets keep the original fact-checking prompt.
+Full training is best run on a GPU server. Local smoke tests stop before full training by default.
 
 ## Evaluate
 
-GraphCheck training and inference write JSONL rows with `label` and `pred`. Compute binary metrics with:
+GraphCheck training and inference write JSONL rows with `label` and `pred` or `prediction`. Compute rating metrics with:
 
 ```bash
-python scripts/evaluate_amazon_binary.py \
-  --input_path output/Amazon_Beauty_GraphUserSim/validation.csv
+python scripts/evaluate_amazon_rating.py \
+  --input_path output/Amazon_Beauty_GraphUserSim/validation.csv \
+  --pred_col pred
 ```
 
-Metrics include accuracy, balanced accuracy, macro F1, precision, recall, and confusion matrix.
+Metrics include MAE, RMSE, accuracy, macro F1, per-rating accuracy, invalid prediction count, and confusion matrix.
+
+`scripts/evaluate_amazon_binary.py` is deprecated and exits with an error.
 
 ## KG-Text Baseline
 
@@ -98,6 +121,40 @@ python scripts/build_amazon_kg_text_prompt.py \
 
 This supports later comparison among raw-history LLM prompting, KG-text prompting, and GraphCheck GNN/projector prompting.
 
+## Automated Smoke Test Pipeline
+
+Run the smallest fixture-based local test without HuggingFace access:
+
+```bash
+python scripts/smoke_test_amazon_pipeline.py
+```
+
+Run an official HuggingFace Amazon Reviews 2023 small sample pipeline:
+
+```bash
+python scripts/run_amazon_smoke_pipeline.py \
+  --category CDs_and_Vinyl \
+  --dataset_name Amazon_CDs_HF_Rating_Smoke \
+  --target_users 20 \
+  --min_interactions 3 \
+  --max_scan_reviews 200000 \
+  --min_user_interactions 2 \
+  --history_k 3
+```
+
+Expected outputs:
+
+- `dataset/extracted_KG/Amazon_CDs_HF_Rating_Smoke/Amazon_CDs_HF_Rating_Smoke.pkl`
+- `dataset/extracted_KG/Amazon_CDs_HF_Rating_Smoke/split/train_indices.txt`
+- `dataset/extracted_KG/Amazon_CDs_HF_Rating_Smoke/split/val_indices.txt`
+- `dataset/extracted_KG/Amazon_CDs_HF_Rating_Smoke/split/test_indices.txt`
+- `dataset/extracted_KG/Amazon_CDs_HF_Rating_Smoke/graphs/doc/*.pt`
+- `dataset/extracted_KG/Amazon_CDs_HF_Rating_Smoke/graphs/claim/*.pt`
+
+The pipeline samples reviews, retrieves matching metadata, builds the rating pkl, runs `graph_build.py`, validates graph files, validates `KGDataset`, and validates `collate_fn`.
+
+By default, local macOS smoke runs stop before `train.py`. For a tiny train check, use `--run_train_smoke`, which defaults to `qwen_0_5b`, batch size 1, and short generation.
+
 ## Leakage Prevention Rules
 
 - Target review text and title are not included in any model input.
@@ -107,14 +164,14 @@ This supports later comparison among raw-history LLM prompting, KG-text promptin
 
 ## Current Limitations
 
-- The task is binary high-rating prediction only.
+- The current Amazon task is exact 1-to-5 rating prediction only.
+- The earlier binary high-rating Amazon task is deprecated and not used in the current pipeline.
 - Aspect extraction is deterministic keyword matching, not a learned extractor.
 - User nodes are sample-local and anonymized as `user:current_user`.
 - Candidate and history KGs are homogeneous GraphCheck triple lists, not heterogeneous PyG `HeteroData`.
 
 ## Future Extensions
 
-- 1-to-5 star rating prediction.
 - Review aspect prediction.
 - Personalized explanation generation.
 - Heterogeneous user/item graphs with HGT.

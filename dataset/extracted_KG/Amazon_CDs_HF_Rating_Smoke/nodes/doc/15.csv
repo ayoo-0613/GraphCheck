@@ -1,0 +1,17 @@
+node_id,node_attr
+0,user:current_user
+1,item:b0007op284
+2,time_bucket:2014_07
+3,category:digital_music
+4,category:cds_vinyl
+5,category:country
+6,category:today_s_country
+7,store:miranda_lambert_format:_audio_cd
+8,price_range:low
+9,item:b004zol57y
+10,store:now_music_format:_audio_cd
+11,price_range:medium
+12,item:b00b8wxfwe
+13,category:pop
+14,category:vocal_pop
+15,store:new_kids_on_the_block_format:_audio_cd

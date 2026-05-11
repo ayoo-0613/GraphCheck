@@ -1,0 +1,17 @@
+node_id,node_attr
+0,user:current_user
+1,item:b000002lnd
+2,time_bucket:2008_03
+3,category:digital_music
+4,category:cds_vinyl
+5,category:pop
+6,category:adult_contemporary
+7,store:madonna_artist_format:_audio_cd
+8,price_range:medium
+9,item:b000bkjkhs
+10,category:soundtracks
+11,store:gregorian_format:_audio_cd
+12,price_range:unknown
+13,item:b0000014tp
+14,category:movie_soundtracks
+15,store:zbigniew_preisner_format:_audio_cd

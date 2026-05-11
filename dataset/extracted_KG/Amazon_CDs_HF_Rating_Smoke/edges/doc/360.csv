@@ -1,0 +1,17 @@
+src,edge_attr,dst
+0,reviewed,1
+0,rated_5,1
+1,interacted_at,2
+1,belongs_to,3
+1,belongs_to,4
+1,belongs_to,5
+1,sold_by,6
+1,has_price_range,7
+0,reviewed,8
+0,rated_5,8
+8,interacted_at,9
+8,belongs_to,3
+8,belongs_to,4
+8,belongs_to,5
+8,sold_by,10
+8,has_price_range,11
